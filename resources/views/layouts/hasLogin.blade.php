@@ -48,24 +48,6 @@
             <hr class="sidebar-divider">
             <!-- Heading -->
             <div class="sidebar-heading">
-                Other
-            </div>
-            <li class="nav-item {{ request()->is('attendance') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('attendance') }}">
-                    <i class="fas fa-fw fa-check"></i>
-                    <span>Attendance Check</span>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->is('quiz') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('quiz') }}">
-                    <i class="fas fa-fw fa-question"></i>
-                    <span>Quiz</span>
-                </a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            <!-- Heading -->
-            <div class="sidebar-heading">
                 Class
             </div>
             <!-- Nav Item - Charts -->
@@ -75,7 +57,23 @@
                     <span>Join Class</span>
                 </a>
             </li>
-            <div id="class_room"></div>
+            @foreach(Auth::user()->classrooms as $key => $classroom)
+            <li class="nav-item {{ (request()->is('classroom/' . $classroom['id']) or request()->is('classroom/' . $classroom['id'] . '/*')) ? 'active' : '' }}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#classMenu{{$key}}" aria-expanded="false" aria-controls="classMenu{{$key}}">
+                    <i class="fas fa-fw fa-chalkboard"></i>
+                    <span>{{$classroom["name"]}}</span>
+                </a>
+                <div id="classMenu{{$key}}" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Class Menu:</h6>
+                        <a class="collapse-item {{ request()->is('classroom/' . $classroom['id']) ? 'active' : '' }}" href="{{url('classroom') . '/' . $classroom['id']}}">Information</a>
+                        <a class="collapse-item {{ request()->is('classroom/' . $classroom['id'] . '/attendance') ? 'active' : '' }}" href="{{url('classroom') . '/' . $classroom['id'] . '/attendance'}}">Attencance Check</a>
+                        <a class="collapse-item {{ request()->is('classroom/' . $classroom['id'] . '/lesson') ? 'active' : '' }}" href="{{url('classroom') . '/' . $classroom['id'] . '/lesson'}}">Lesson</a>
+                        <a class="collapse-item {{ request()->is('classroom/' . $classroom['id'] . '/quiz') ? 'active' : '' }}" href="{{url('classroom') . '/' . $classroom['id'] . '/quiz'}}">Quiz</a>
+                    </div>
+                </div>
+            </li>
+            @endforeach
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
@@ -97,7 +95,7 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link" data-widget="fullscreen" role="button">
+                            <a class="nav-link" role="button" onclick="document.getElementsByTagName('body')[0].requestFullscreen()">
                                 <i class="fas fa-expand-arrows-alt"></i>
                             </a>
                         </li>
@@ -171,16 +169,6 @@
     <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
-    <script>
-        $.get("{{ url('/userclassroom') }}", function (data) {
-            for (const key in data) {
-                if (Object.hasOwnProperty.call(data, key)) {
-                    const classroom = data[key];
-                    $("#class_room").append('<li class="nav-item"><a class="nav-link" href="{{url("classroom")}}/' + classroom.id + '"><i class="fas fa-fw fa-chalkboard"></i><span>' + classroom.name + '</span></a></li>');
-                }
-            }
-        });
-    </script>
     <!-- Custom scripts this pages-->
     @yield("js")
 </body>

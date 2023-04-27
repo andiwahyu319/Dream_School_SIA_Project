@@ -36,9 +36,13 @@ Route::get("/classroom/{classroom}/out", [App\Http\Controllers\ClassRoomControll
 Route::resource("/post", App\Http\Controllers\PostController::class)->only(["store", "destroy"]);
 Route::resource("/comment", App\Http\Controllers\CommentController::class)->only(["store", "destroy"]);
 
-Route::resource("/attendance", App\Http\Controllers\AttendanceController::class);
+Route::get("/classroom/{classroom}/attendance", [App\Http\Controllers\AttendanceController::class, "index"]);
+Route::resource("/attendance", App\Http\Controllers\AttendanceController::class)->except("index");
 Route::get("/attendance/{attendance}/scan", [App\Http\Controllers\AttendanceController::class, "scan"]);
 Route::post("/attendance/{attendance}/scan", [App\Http\Controllers\AttendanceController::class, "scandata"]);
 Route::get("/attendance/{attendance}/permit", [App\Http\Controllers\AttendanceController::class, "permit"]);
 Route::post("/attendance/{attendance}/permit", [App\Http\Controllers\AttendanceController::class, "permitdata"]);
 Route::get("/attendance/{attendance}/data", [App\Http\Controllers\AttendanceController::class, "viewdata"]);
+
+Route::get("/classroom/{classroom}/lesson", [App\Http\Controllers\LessonController::class, "index"]);
+Route::resource("/lesson", App\Http\Controllers\LessonController::class)->except("index");

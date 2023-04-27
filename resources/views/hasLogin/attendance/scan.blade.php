@@ -25,12 +25,10 @@
 </div>
 <!-- Page Content -->
 <div class="row justify-content-center">
-    <div class="col col-md-4">
+    <div class="col col-md-6">
         <div class="card shadow mb-4">
             <div class="card-body">
-                <div id="square">
-                    <video class="card-img" id="preview"></video>
-                </div> 
+                <div class="card-img" id="preview"></div>
             </div>
         </div>
     </div>
@@ -64,21 +62,20 @@
                 </ul>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
-    </div>
+</div>
 @endsection
 
 @section("js")
-<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <script type="text/javascript">
-    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-    scanner.addListener('scan', function (content) {
+    function onScanSuccess(decodedText, decodedResult) {
         $.post( window.location.href, {
             "_token": "{{csrf_token()}}",
-            "data": content,
+            "data": decodedResult.decodedText,
         }).done(function(datas) {
             data = jQuery.parseJSON(JSON.stringify(datas));
             $("#name").text(data["name"]);
@@ -86,18 +83,16 @@
             $("#time").text(data.time);
             $("#late").text(data.late);
             $("#resultModal").modal();
-        });  
-    });
-    Instascan.Camera.getCameras().then(function (cameras) {
-        if (cameras.length > 1) {
-            scanner.start(cameras[1]);
-        } else if (cameras.length > 0) {
-            scanner.start(cameras[0]);
-        } else {
-            console.error('No cameras found.');
-        }
-    }).catch(function (e) {
-        console.error(e);
-    });
+        }); 
+    }
+    let config = { 
+        fps: 10,
+        qrbox : { width: 250, height: 250 },
+        aspectRatio: 1.0,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+        formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
+     }
+    var html5QrcodeScanner = new Html5QrcodeScanner("preview", config);
+    html5QrcodeScanner.render(onScanSuccess);
 </script>
 @endsection

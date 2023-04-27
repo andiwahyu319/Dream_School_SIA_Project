@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\AttendanceReport;
 use App\Models\ClassMember;
+use App\Models\ClassRoom;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class AttendanceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        date_default_timezone_set("Asia/Makassar");
     }
     # ===================================================================
     public function scan(Attendance $attendance)
@@ -159,19 +161,17 @@ class AttendanceController extends Controller
         );
         return $res;
     }
+    # ===================================================================
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($classroom)
     {
-        $classroom = array();
-        foreach (Auth::user()->classrooms as $key => $room) {
-            array_push($classroom, $room->id);
-        }
-        $attendances = Attendance::whereIn("class_id", $classroom)->latest()->get();
-        return view("hasLogin.attendance.index", compact("attendances"));
+        $attendances = Attendance::where("class_id", $classroom)->latest()->get();
+        $classroom = ClassRoom::where("id", $classroom)->first();
+        return view("hasLogin.attendance.index", compact("classroom", "attendances"));
     }
 
     /**
@@ -201,7 +201,7 @@ class AttendanceController extends Controller
             $this->validate($request, [
                 "name" => "required|string|max:255",
                 "method" => "required|in:1,2",
-                "class_id" => "required",
+                "class_id" => "required|integer|exists:class_rooms,id",
                 "start" => "required",
                 "end" => "required",
             ]);
@@ -296,6 +296,7 @@ class AttendanceController extends Controller
             $this->validate($request, [
                 "name" => "required|string|max:255",
                 "method" => "required|in:1,2",
+                "class_id" => "required|integer|exists:class_rooms,id",
                 "start" => "required",
                 "end" => "required",
             ]);
@@ -305,7 +306,7 @@ class AttendanceController extends Controller
                 "start" => $request->start,
                 "end" => $request->end,
             ]);
-            return redirect("attendance");
+            return redirect("/classroom" . "/" . $request->class_id . "/attendance");
         } else {
             return abort("403");
         }
@@ -321,8 +322,9 @@ class AttendanceController extends Controller
     {
         if (Auth::user()->id == $attendance->teacher) {
             AttendanceReport::where("attendance_id", $attendance->id)->delete();
+            $classroom = $attendance->class_id;
             $attendance->delete();
-            return redirect("attendance");
+            return redirect(url("/classroom" . "/" . $classroom . "/attendance"));
         } else {
             return abort("403");
         }

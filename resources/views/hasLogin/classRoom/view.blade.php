@@ -139,7 +139,7 @@
                 <div class="card-body p-0">
                     @csrf
                     <input type="hidden" name="class_id" value="{{$room->id}}">
-                    <textarea name="body" id="body"></textarea>
+                    <textarea name="body" id="body" placeholder="What Do You Think ?"></textarea>
                 </div>
                 <div class="card-footer">
                     <input type="submit" class="btn btn-primary" value="Send">
@@ -210,9 +210,8 @@
 @section("js")
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
-    $(document).ready(function() {
-        var text = $('#body');
-        text.summernote();
+    $('#body').summernote({
+        inheritPlaceholder: true
     });
 </script>
 @if(Auth::user()->role == "teacher")

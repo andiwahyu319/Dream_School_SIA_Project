@@ -30,7 +30,7 @@
                     </div>
                     <div class="form-group">
                         <label>Classroom</label>
-                        <select name="class_id" id="class_id" class="form-control" disabled="disabled">
+                        <select name="class_id" id="class_id" class="form-control" readonly>
                             @foreach($classrooms as $key => $classroom)
                             <option value="{{$classroom->id}}" {{ ($attendance->class_id == $classroom->id) ? "selected": "" }} >{{$classroom->name}}</option>
                             @endforeach

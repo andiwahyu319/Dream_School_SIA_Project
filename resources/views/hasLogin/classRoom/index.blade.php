@@ -17,13 +17,23 @@
                     @csrf
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" name="name" class="form-control" id="name"
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name"
                             placeholder="Enter Classroom Name" required>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label>Description</label>
-                        <input type="text" name="description" class="form-control" id="description"
+                        <input type="text" name="description" class="form-control @error('description') is-invalid @enderror" id="description"
                             placeholder="Enter Classroom Description" required>
+                        @error('description')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
                 <div class="card-footer">

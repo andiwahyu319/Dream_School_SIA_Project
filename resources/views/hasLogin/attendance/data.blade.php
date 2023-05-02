@@ -1,6 +1,7 @@
 @extends("layouts.hasLogin")
 @section("css")
 <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" rel="stylesheet" >
 @endsection
 @section("content")
 <!-- Page Heading -->
@@ -45,6 +46,11 @@
 @section("js")
 <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script>
     var columns = [
         {render: function (index, row, data, meta) {
@@ -53,9 +59,9 @@
         {data: "name", orderable: true},
         {data: "status", render: function (data, type) {
                 if (data) {
-                    return "<span class='text-success'><i class='fas fa-check'></i></span>"
+                    return "✔️"
                 } else {
-                    return "<span class='text-danger'><i class='fas fa-times'></i></span>"
+                    return "❌"
                 }
             }, orderable: false},
         {data: "reason", orderable: false},
@@ -66,7 +72,32 @@
         ajax: {
             url: "{{ url('attendance') . '/' . $attendance->id . '/data' }}"
         },
-        columns: columns
+        columns: columns,
+        dom: "Bfrtip",
+        buttons: [
+            {
+                extend: "copyHtml5",
+                text: "Excel",
+                header: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}",
+                messageTop: "Attendance {{$attendance->name}} Data ( {{$attendance->end}} )",
+                title: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}"
+            },
+            {
+                extend: "excelHtml5",
+                text: "Excel",
+                filename: "Attendance {{$attendance->name}} Data",
+                header: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}",
+                messageTop: "Attendance {{$attendance->name}} Data ( {{$attendance->end}} )"
+            },
+            {
+                extend: "pdfHtml5",
+                text: "PDF",
+                filename: "Attendance {{$attendance->name}} Data",
+                orientation: "portrait",
+                pageSize: "A4",
+                title: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}"
+            },
+        ]
     }).on("xhr", function () {
         var datas = table.ajax.json();
         $("#count-attend").text(datas["count"]["attend"]);

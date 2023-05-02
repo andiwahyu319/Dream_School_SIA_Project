@@ -36,13 +36,13 @@
                                 <td>{{$attendance->name}}</td>
                                 <td>
                                     @if (strtotime(date("Y-m-d H:i:s")) < strtotime($attendance->start))
-                                        <span class="text-warning" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}}">Upcoming</span>
+                                        <span class="text-warning" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}} <br>(expired 3 hour after late)">Upcoming</span>
                                     @elseif((strtotime(date("Y-m-d H:i:s")) > strtotime($attendance->start)) and (strtotime(date("Y-m-d H:i:s")) < strtotime($attendance->end)))
-                                        <span class="text-success" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}}">Now</span>
+                                        <span class="text-success" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}} <br>(expired 3 hour after late)">Now</span>
                                     @elseif((strtotime(date("Y-m-d H:i:s")) > strtotime($attendance->end)) and (strtotime(date("Y-m-d H:i:s")) < (strtotime($attendance->end) + 10800)))
-                                        <span class="text-danger" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}}">Late</span>
+                                        <span class="text-danger" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}} <br>(expired 3 hour after late)">Late</span>
                                     @else
-                                        <span class="text-secondary" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}}">Expired</span>
+                                        <span class="text-secondary" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="Start : {{$attendance->start}} <br>Late : {{$attendance->end}} <br>(expired 3 hour after late)">Expired</span>
                                     @endif
                                 </td>
                                 <td>{{($attendance->method == 1) ? 'Teacher scan QR in student generated Id card' : 'Student Scan QR from teacher';}}</td>

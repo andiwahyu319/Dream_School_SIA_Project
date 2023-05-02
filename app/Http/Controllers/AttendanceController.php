@@ -16,7 +16,6 @@ class AttendanceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        date_default_timezone_set("Asia/Makassar");
     }
     # ===================================================================
     public function scan(Attendance $attendance)
@@ -202,8 +201,8 @@ class AttendanceController extends Controller
                 "name" => "required|string|max:255",
                 "method" => "required|in:1,2",
                 "class_id" => "required|integer|exists:class_rooms,id",
-                "start" => "required",
-                "end" => "required",
+                "start" => "required|date",
+                "end" => "required|date|after:start",
             ]);
             $attendance = new Attendance;
             $attendance->name = $request->name;
@@ -297,8 +296,8 @@ class AttendanceController extends Controller
                 "name" => "required|string|max:255",
                 "method" => "required|in:1,2",
                 "class_id" => "required|integer|exists:class_rooms,id",
-                "start" => "required",
-                "end" => "required",
+                "start" => "required|date",
+                "end" => "required|date|after:start",
             ]);
             $attendance->update([
                 "name" => $request->name,

@@ -46,3 +46,10 @@ Route::get("/attendance/{attendance}/data", [App\Http\Controllers\AttendanceCont
 
 Route::get("/classroom/{classroom}/lesson", [App\Http\Controllers\LessonController::class, "index"]);
 Route::resource("/lesson", App\Http\Controllers\LessonController::class)->except("index");
+
+Route::get("/classroom/{classroom}/quiz", [App\Http\Controllers\QuizController::class, "index"]);
+Route::resource("/quiz", App\Http\Controllers\QuizController::class)->except("index");
+Route::get("/quiz/{quiz}/q/edit", [App\Http\Controllers\QuizQuestionController::class, "create"]);
+Route::post("/quiz/{quiz}/q/edit", [App\Http\Controllers\QuizQuestionController::class, "store"]);
+Route::get("/quiz/{quiz}/{quizQuestion}/edit", [App\Http\Controllers\QuizQuestionController::class, "edit"]);
+Route::put("/quiz/{quiz}/{quizQuestion}/edit", [App\Http\Controllers\QuizQuestionController::class, "update"]);

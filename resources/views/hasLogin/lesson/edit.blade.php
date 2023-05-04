@@ -5,6 +5,15 @@
 @endsection
 
 @section("content")
+<div aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{url('classroom') . '/' . $lesson->class_id}}"><i class="fas fa-fw fa-chalkboard"></i> {{$classname}}</a></li>
+        <li class="breadcrumb-item"><a href="{{url('classroom') . '/' . $lesson->class_id . '/lesson'}}"> <i class="fas fa-fw fa-list"></i> Lesson</a></li>
+        <li class="breadcrumb-item"><a href="#"><i class="fas fa-fw fa-book"></i> {{$lesson->title}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-fw fa-edit"></i> Edit</li>
+    </ol>
+</div>
+
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 </div>

@@ -118,7 +118,7 @@ class AttendanceController extends Controller
             "not recorded" =>0,
         );
         foreach ($user as $key => $people) {
-            if ($people->id != $attendance->teacher ) {
+            if ($people->id != $attendance->teacher) {
                 $dat = array(
                     "name" => $people->name,
                     "status" => 0,

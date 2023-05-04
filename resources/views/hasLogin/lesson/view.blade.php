@@ -1,8 +1,12 @@
 @extends("layouts.hasLogin")
 
 @section("content")
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{url('classroom') . '/' . $lesson->class_id}}"><i class="fas fa-fw fa-chalkboard"></i> {{$classname}}</a></li>
+        <li class="breadcrumb-item"><a href="{{url('classroom') . '/' . $lesson->class_id . '/lesson'}}"> <i class="fas fa-fw fa-list"></i> Lesson</a></li>
+        <li class="breadcrumb-item active"><i class="fas fa-fw fa-book"></i> {{$lesson->title}}</li>
+    </ol>
 </div>
 
 <!-- Page Content -->
@@ -10,9 +14,9 @@
     <div class="col col-md-8 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
+                <h1 class="h3 m-0 font-weight-bold text-text-gray-800">
                     {{$lesson->title}}
-                </h6>
+                </h1>
             </div>
             <div class="card-body">
                 {!! $lesson->body !!}

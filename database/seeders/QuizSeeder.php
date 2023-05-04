@@ -55,7 +55,7 @@ class QuizSeeder extends Seeder
 
         $faker = Faker::create();
         $quiz = new Quiz;
-        $quiz->name = $faker->name;
+        $quiz->name = $faker->sentence(2);
         $quiz->class_id = 1;
         $quiz->duration = 30 * 60;
         $quiz->start = date("Y-m-d H:i:s");

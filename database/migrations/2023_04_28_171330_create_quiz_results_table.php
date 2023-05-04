@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('quiz_id');
             $table->unsignedBigInteger('student');
+            $table->integer("answer_true");
+            $table->integer("answer_false");
+            $table->integer("not_answered");
             $table->integer("score");
             $table->json("answer");
             $table->timestamps();

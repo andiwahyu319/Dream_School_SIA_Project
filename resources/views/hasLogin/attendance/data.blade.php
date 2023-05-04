@@ -6,7 +6,7 @@
 @section("content")
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Attendance data</h1>
+    <h1 class="h3 mb-0 text-gray-800">Attendance {{$attendance->name}} data</h1>
 </div>
 
 <!-- Page Content -->
@@ -77,7 +77,7 @@
         buttons: [
             {
                 extend: "copyHtml5",
-                text: "Excel",
+                text: "Coppy",
                 header: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}",
                 messageTop: "Attendance {{$attendance->name}} Data ( {{$attendance->end}} )",
                 title: "Attendance {{$attendance->name}} Data \n {{$attendance->end}}"

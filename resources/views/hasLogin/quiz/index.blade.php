@@ -55,11 +55,20 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                    @elseif((strtotime(date("Y-m-d H:i:s")) > strtotime($quiz->start)) and (strtotime(date("Y-m-d H:i:s")) < strtotime($quiz->end)))
+                                        <a href="{{url('quiz') . '/' . $quiz->id}}" class="btn btn-primary btn-circle btn-sm" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Go">
+                                            <i class="fas fa-feather"></i>
+                                        </a>
                                     @else
-                                    <a href="{{url('quiz') . '/' . $quiz->id}}" class="btn btn-primary btn-circle btn-sm" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Go">
-                                        <i class="fas fa-book"></i>
-                                    </a>
+                                        <div class="btn p-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="(Quiz Inactive)">
+                                            <button class="btn btn-primary btn-circle btn-sm" disabled>
+                                                <i class="fas fa-feather"></i>
+                                            </button>
+                                        </div>
                                     @endif
+                                    <a href="{{url('quiz') . '/' . $quiz->id . '/score'}}" class="btn btn-success btn-circle btn-sm" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="View Score">
+                                        <i class="fas fa-database"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach()

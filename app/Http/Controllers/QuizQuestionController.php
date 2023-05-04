@@ -84,9 +84,12 @@ class QuizQuestionController extends Controller
      * @param  \App\Models\QuizQuestion  $quizQuestion
      * @return \Illuminate\Http\Response
      */
-    public function show(QuizQuestion $quizQuestion)
+    public function show(Quiz $quiz)
     {
-        //
+        $quiz->question = QuizQuestion::select("id", "question", "option_a", "option_b", "option_c", "option_d")
+        ->where("quiz_id", $quiz->id)
+        ->get()->shuffle();
+        return $quiz;
     }
 
     /**

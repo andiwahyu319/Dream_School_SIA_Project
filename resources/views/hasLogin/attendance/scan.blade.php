@@ -37,7 +37,7 @@
 <!-- Result Modal-->
 <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="dataModal"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="dataModal">Result</h5>
@@ -83,7 +83,7 @@
             $("#time").text(data.time);
             $("#late").text(data.late);
             $("#resultModal").modal();
-        }); 
+        });
     }
     let config = { 
         fps: 10,

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassMember;
 use App\Models\ClassRoom;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
+use App\Models\QuizResult;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +21,92 @@ class QuizController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    // ===============================================================
+    // ===============================================================
+    // ===============================================================
+
+    public function submit(Request $request, Quiz $quiz)
+    {
+        $this->validate($request, [
+            "answer" => "required"
+        ]);
+        $answers = json_decode($request->answer);
+        $questions = QuizQuestion::select("id", "true_answer")->where("quiz_id", $quiz->id)->get();
+        $total_question = $questions->count();
+        $answer_true = 0;
+        $answer_false = 0;
+        foreach ($questions as $key => $question) {
+            foreach ($answers as $key => $answer) {
+                if ($question->id == $answer->question_id) {
+                    if ($answer->answer == "") {
+                        // pass
+                    } else if ($answer->answer == $question->true_answer) {
+                        $answer_true++;
+                    } else {
+                        $answer_false++;
+                    }
+                }
+            }
+        }
+        $not_answered = $total_question - $answer_true - $answer_false;
+        $score = $answer_true / $total_question * 100;
+
+        $result = new QuizResult;
+        $result->quiz_id = $quiz->id;
+        $result->student = Auth::user()->id;
+        $result->answer_true = $answer_true;
+        $result->answer_false = $answer_false;
+        $result->not_answered = $not_answered;
+        $result->score = $score;
+        $result->answer = $request->answer;
+        $result->save();
+
+        return array(
+            "status" => "ok",
+            "student" => Auth::user()->name,
+            "answer_true" => $answer_true,
+            "answer_false" => $answer_false,
+            "not_answered" => $not_answered,
+            "score" => $score
+        );
+    }
+
+    // ===============================================================
+    // ===============================================================
+    // ===============================================================
+
+    public function score(Quiz $quiz)
+    {
+        $mid = array();
+        foreach (ClassMember::where("class_id", $quiz->class_id)->get() as $key => $member) {
+            array_push($mid, $member->user_id);
+        }
+        $users = User::whereIn("id", $mid)->get();
+        $data = array();
+        $results = QuizResult::where("quiz_id", $quiz->id)->get();
+        foreach ($users as $key => $user) {
+            if ($user->id != $quiz->teacher) {
+                $dat = array(
+                    "name" => $user->name,
+                    "submit" => "-",
+                    "answer_true" => "-",
+                    "answer_false" => "-",
+                    "score" => "-"
+                );
+                foreach ($results as $key => $result) {
+                    if ($result->student == $user->id) {
+                        $dat["submit"] = $result->created_at;
+                        $dat["answer_true"] = $result->answer_true;
+                        $dat["answer_false"] = $result->answer_false + $result->not_answered;
+                        $dat["score"] = $result->score;
+                    }
+                }
+                array_push($data, $dat);
+            }
+        }
+        return view("hasLogin.quiz.score", compact("quiz", "data"));
     }
 
     /**
@@ -91,7 +180,15 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        return view("hasLogin.quiz.view");
+        if (Auth::user()->id == $quiz->teacher) {
+            return redirect(url("quiz" . "/" . $quiz->id . "/edit"));
+        } elseif ((strtotime(date("Y-m-d H:i:s")) < strtotime($quiz->start)) or (strtotime(date("Y-m-d H:i:s")) > strtotime($quiz->end))) {
+            return redirect(url("quiz" . "/" . $quiz->id . "/score"));
+        } elseif (QuizResult::where("quiz_id", $quiz->id)->get()->contains("student", Auth::user()->id)) {
+            return redirect(url("quiz" . "/" . $quiz->id . "/score"));
+        } else {
+            return view("hasLogin.quiz.view", compact("quiz"));
+        }
     }
 
     /**
@@ -147,6 +244,14 @@ class QuizController extends Controller
      */
     public function destroy(Quiz $quiz)
     {
-        //
+        if (Auth::user()->id == $quiz->teacher) {
+            QuizQuestion::where("quiz_id", $quiz->id)->delete();
+            QuizResult::where("quiz_id", $quiz->id)->delete();
+            $classroom = $quiz->class_id;
+            $quiz->delete();
+            return redirect(url("/classroom" . "/" . $classroom . "/quiz"));
+        } else {
+            return abort("403");
+        }
     }
 }
